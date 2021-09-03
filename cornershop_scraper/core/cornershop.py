@@ -54,7 +54,7 @@ class Cornershop:
 
         url = CornershopURL + '/api/v3/branch_groups'
         params = {'locality': self._address, 'country': self._country}
-        req = self._session.get(url=url, sess=self._session, params=params)
+        req = self._session.get(url=url, params=params)
         json = req.json()
 
         stores_id = set()
