@@ -1,0 +1,2 @@
+
+CornershopURL = 'https://cornershopapp.com'

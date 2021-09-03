@@ -1,0 +1,4 @@
+beautifulsoup4==4.9.3
+cloudscraper==1.2.58
+requests==2.26.0
+XlsxWriter==3.0.1
