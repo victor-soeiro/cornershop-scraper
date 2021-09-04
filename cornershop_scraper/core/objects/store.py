@@ -60,12 +60,13 @@ class Store(object):
 
         if only_main_aisle:
             index = 1 if json['aisles'][0]['aisle_id'] == 'promotions' else 0
-            products = [Product(info=j) for j in json['aisles'][index]['products']]
+            aisle = json['aisles'][index]
+            products = [Product(info=j, aisle=aisle['aisle_id'], department=aisle['department_id']) for j in aisle['products']]
 
         else:
             products = []
             for aisle in json['aisles']:
-                products.extend([Product(info=prod) for prod in aisle['products']])
+                products.extend([Product(info=prod, aisle=aisle.name, department=aisle.department_id) for prod in aisle['products']])
 
         return products
 
@@ -78,7 +79,7 @@ class Store(object):
         req = self.session.get(url)
         json = req.json()
 
-        products = [Product(info=prod, aisle=aisle.name) for prod in json]
+        products = [Product(info=prod, aisle=aisle.name, department=aisle.department_id) for prod in json]
         if save:
             save_products(file_path=self.file_path, products=products)
 

@@ -10,8 +10,9 @@ front-end API of the website.
 class Product:
     """ Parses all the retrieves data into a product object to easily maintain. """
 
-    def __init__(self, info: dict, aisle: str = None):
+    def __init__(self, info: dict, aisle: str = None, department: str = None):
         self.aisle = aisle
+        self.department = department
         self.brand_name = info['brand'].get('name') if info['brand'] else ''
         self.brand_id = info['brand'].get('id') if info['brand'] else ''
         self.buy_unit = info['buy_unit']
