@@ -3,6 +3,7 @@ from setuptools import setup, find_packages
 
 HERE = Path(__file__).parent
 README = (HERE / 'README.md').read_text()
+REQUIRES = (HERE / 'requirements.txt').read_text().splitlines()
 
 NAME = 'cornershop-scraper'
 VERSION = '0.1.0'
@@ -24,9 +25,7 @@ setup(
     url=URL,
     license=LICENSE,
     packages=find_packages(),
-    install_requires=[
-        'beautifulsoup4', 'cloudscraper==1.2.58', 'requests', 'XlsxWriter'
-    ],
+    install_requires=REQUIRES,
     python_requires=PYTHON_VER,
     keywords=['cornershop', 'scraper', 'products', 'stores', 'market', 'delivery']
 )
