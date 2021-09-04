@@ -2,6 +2,7 @@
 
 CornerShop Scraper
 =================
+[![COMMITS](https://img.shields.io/github/last-commit/victor-soeiro/cornershop-scraper)](https://img.shields.io/github/last-commit/victor-soeiro/cornershop-scraper)
 [![LICENCE](https://img.shields.io/github/license/victor-soeiro/cornershop-scraper)](https://github.com/victor-soeiro/cornershop-scraper/blob/main/LICENSE)
 
 cornershop-scraper is a python package to use the front-end API of Cornershop website to retrieve stores and products.
