@@ -80,7 +80,7 @@ To get and save all products from the store:
 all_products = prezunic.all_products(save=True)
 ```
 
-**It may take some time to scrape all the produts.**
+**It may take some time to scrape all the products.**
 
 Contact
 -------
