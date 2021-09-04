@@ -41,6 +41,7 @@ class Product:
             'Currency': self.currency,
             'Buy Unit': self.buy_unit,
             'Aisle': self.aisle,
+            'Department': self.department,
             'Kind': self.kind,
             'Label': self.label,
             'Original Price': self.original_price,
