@@ -1,18 +1,32 @@
+from pathlib import Path
 from setuptools import setup, find_packages
 
-with open('requirementes.txt', 'r') as file:
-    requires = file.read().splitlines()
+HERE = Path(__file__).parent
+README = (HERE / 'README.md').read_text()
+
+NAME = 'cornershop-scraper'
+VERSION = '0.1.0'
+DESCRIPTION = 'Scrapes Cornershop stores and products.'
+AUTHOR = 'Victor Soeiro'
+AUTHOR_EMAIL = 'victor.soeiro.araujo@gmail.com'
+URL = 'https://github.com/victor-soeiro/cornershop-scraper'
+LICENSE = 'Public domain'
+PYTHON_VER = '>=3.8'
 
 setup(
-    name='cornershop-scraper',
-    version='0.1.0',
-    description='Scrapes Cornershop stores and products.',
-    author='Victor Soeiro',
-    author_email='victor.soeiro.araujo@gmail.com',
-    url='https://github.com/victor-soeiro/cornershop-scraper',
-    license='Public domain',
-    pakages=find_packages(),
-    install_requires=requires,
-    python_requires='>=3.8',
+    name=NAME,
+    version=VERSION,
+    description=DESCRIPTION,
+    long_description=README,
+    long_description_content_type='text/markdown',
+    author=AUTHOR,
+    author_email=AUTHOR_EMAIL,
+    url=URL,
+    license=LICENSE,
+    packages=find_packages(),
+    install_requires=[
+        'beautifulsoup4', 'cloudscraper==1.2.58', 'requests', 'XlsxWriter'
+    ],
+    python_requires=PYTHON_VER,
     keywords=['cornershop', 'scraper', 'products', 'stores', 'market', 'delivery']
 )
