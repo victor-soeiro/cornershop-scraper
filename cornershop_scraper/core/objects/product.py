@@ -28,7 +28,6 @@ class Product:
         self.purchasable = info['purchasable']
         self.variable_weight = info['variable_weight']
         self.availability_status = info['availability_status']
-        self.full_info = info
 
     def context(self):
         return {
