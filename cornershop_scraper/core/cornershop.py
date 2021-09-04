@@ -46,6 +46,7 @@ class Cornershop:
             business_id=business_id,
             address=self._address,
             country=self._country,
+            language=self._language,
             session=self._session
         )
 

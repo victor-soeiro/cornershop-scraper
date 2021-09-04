@@ -5,14 +5,14 @@ HERE = Path(__file__).parent
 README = (HERE / 'README.md').read_text()
 REQUIRES = (HERE / 'requirements.txt').read_text().splitlines()
 
-NAME = 'cornershop-scraper'
+NAME = 'cornershop_scraper'
 VERSION = '0.1.0'
 DESCRIPTION = 'Scrapes Cornershop stores and products.'
 AUTHOR = 'Victor Soeiro'
 AUTHOR_EMAIL = 'victor.soeiro.araujo@gmail.com'
 URL = 'https://github.com/victor-soeiro/cornershop-scraper'
 LICENSE = 'Public domain'
-PYTHON_VER = '>=3.8'
+PYTHON_VER = '>=3.6'
 
 setup(
     name=NAME,
@@ -24,6 +24,13 @@ setup(
     author_email=AUTHOR_EMAIL,
     url=URL,
     license=LICENSE,
+    classifiers=[
+        'Programming Language :: Python :: 3',
+        'Programming Language :: Python :: 3.6',
+        'Intended Audience :: Customer Service',
+        'Intended Audience :: Science/Research',
+        'License :: OSI Approved :: MIT License',
+    ],
     packages=find_packages(),
     install_requires=REQUIRES,
     python_requires=PYTHON_VER,

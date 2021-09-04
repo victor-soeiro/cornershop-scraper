@@ -16,4 +16,4 @@ class Aisle:
         self.department_id = department_id
 
     def __repr__(self):
-        return f'[{self.id}] {self.name} | Department: {self.department_id}'
+        return f'[{self.id}] {self.name}'

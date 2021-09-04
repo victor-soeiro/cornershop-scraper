@@ -6,6 +6,9 @@ Provides an useful objecct listing all the accepted countries
 includint its initials and language.
 """
 
+__LAST_UPDATE__ = '04/09/2021'
+
+
 ACCEPTED_COUNTRIES = [
     {'country': 'AR', 'language': 'es-ar', 'name': 'Argentina'},
     {'country': 'BR', 'language': 'pt-br', 'name': 'Brasil'},
@@ -22,3 +25,10 @@ ACCEPTED_COUNTRIES = [
     {'country': 'UY', 'language': 'es-uy', 'name': 'Uruguay'}
 ]
 
+
+def get_country_arguments(country_name: str):
+    for country in ACCEPTED_COUNTRIES:
+        if country['name'] == country_name:
+            return {'country': country['country'], 'language': country['language']}
+
+    raise Warning('It was not possible to found a valid country.')
