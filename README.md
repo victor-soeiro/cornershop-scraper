@@ -2,8 +2,10 @@
 
 CornerShop Scraper
 =================
-[![COMMITS](https://img.shields.io/github/last-commit/victor-soeiro/cornershop-scraper)](https://img.shields.io/github/last-commit/victor-soeiro/cornershop-scraper)
 [![LICENCE](https://img.shields.io/github/license/victor-soeiro/cornershop-scraper)](https://github.com/victor-soeiro/cornershop-scraper/blob/main/LICENSE)
+[![COMMITS](https://img.shields.io/github/last-commit/victor-soeiro/cornershop-scraper)](https://img.shields.io/github/last-commit/victor-soeiro/cornershop-scraper)
+[![SIZE](https://img.shields.io/github/repo-size/victor-soeiro/cornershop-scraper?label=size)]()
+[![PyPI](https://img.shields.io/pypi/v/cornershop-scraper)]()
 
 cornershop-scraper is a python package to use the front-end API of Cornershop website to retrieve stores and products.
 It works for all Cornershop countries, as Brazil, United States, Mexico, Canada and etc.
@@ -24,6 +26,11 @@ To get the latest version, install directly from the source:
 git clone https://github.com/victor-soeiro/cornershop-scraper.git
 cd cornershop-scraper
 python setup.py install
+```
+
+Or install it with PyPI.
+``` bash
+pip install cornershop_scraper
 ```
 
 Usage
