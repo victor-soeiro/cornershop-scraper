@@ -11,7 +11,7 @@ from typing import List, Optional
 
 from cornershop_scraper.core.objects import Department, Product, Aisle
 from cornershop_scraper.core import CornershopURL
-from cornershop_scraper.utils.writer.xlsx_writer import save_products
+from cornershop_scraper.utils.xlsx_writer import save_products
 from cornershop_scraper.utils.token import get_local_session, CloudScraper
 
 
@@ -61,16 +61,32 @@ class Store(object):
         if only_main_aisle:
             index = 1 if json['aisles'][0]['aisle_id'] == 'promotions' else 0
             aisle = json['aisles'][index]
-            products = [Product(info=j, aisle=aisle['aisle_id'], department=aisle['department_id']) for j in aisle['products']]
+            products = [
+                Product(
+                    info=j,
+                    aisle=aisle['aisle_name'],
+                    department=self.get_department(aisle['department_id'], 'id').name
+                )
+                for j in aisle['products']
+            ]
 
         else:
             products = []
             for aisle in json['aisles']:
-                products.extend([Product(info=prod, aisle=aisle.name, department=aisle.department_id) for prod in aisle['products']])
+                products.extend(
+                    [
+                        Product(
+                            info=prod,
+                            aisle=aisle['aisle_name'],
+                            department=self.get_department(aisle['department_id'], 'id').name
+                        )
+                        for prod in aisle['products']
+                    ]
+                )
 
         return products
 
-    def products_by_aisle(self, id_: str, save: bool = False) -> List[Product]:
+    def products_by_aisle(self, id_: str, save: bool = False, headers: list = None) -> List[Product]:
         """ Returns all aisles products given its ID. """
 
         aisle = self.get_aisle(value=id_, key='id')
@@ -79,13 +95,20 @@ class Store(object):
         req = self.session.get(url)
         json = req.json()
 
-        products = [Product(info=prod, aisle=aisle.name, department=aisle.department_id) for prod in json]
+        products = [
+            Product(
+                info=prod,
+                aisle=aisle.name,
+                department=self.get_department(aisle.department_id, 'id').name
+            )
+            for prod in json
+        ]
         if save:
-            save_products(file_path=self.file_path, products=products)
+            save_products(file_path=self.file_path, products=products, headers=headers)
 
         return products
 
-    def products_by_department(self, id_: str, save: bool = False) -> List[Product]:
+    def products_by_department(self, id_: str, save: bool = False, headers: list = None) -> List[Product]:
         """ Returns all department products given its ID. """
 
         products = []
@@ -96,11 +119,11 @@ class Store(object):
             sleep(self.DEFAULT_DELAY)
 
         if save:
-            save_products(file_path=self.file_path, products=products)
+            save_products(file_path=self.file_path, products=products, headers=headers)
 
         return products
 
-    def all_products(self, save: bool = False) -> List[Product]:
+    def all_products(self, save: bool = False, headers: list = None) -> List[Product]:
         """ Returns all store products. """
 
         products = []
@@ -110,7 +133,7 @@ class Store(object):
             sleep(self.DEFAULT_DELAY)
 
         if save:
-            save_products(file_path=self.file_path, products=products)
+            save_products(file_path=self.file_path, products=products, headers=headers)
 
         return products
 

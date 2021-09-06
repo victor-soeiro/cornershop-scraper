@@ -29,26 +29,5 @@ class Product:
         self.variable_weight = info['variable_weight']
         self.availability_status = info['availability_status']
 
-    def context(self):
-        return {
-            'ID': self.id,
-            'Product': self.name,
-            'Package': self.package,
-            'Brand Name': self.brand_name,
-            'Brand ID': self.brand_id,
-            'Price': self.price,
-            'Currency': self.currency,
-            'Buy Unit': self.buy_unit,
-            'Aisle': self.aisle,
-            'Department': self.department,
-            'Kind': self.kind,
-            'Label': self.label,
-            'Original Price': self.original_price,
-            'Price per Unit': self.price_per_unit,
-            'Purchasable': self.purchasable,
-            'Variable Weight': self.variable_weight,
-            'Availability Status': self.availability_status
-        }
-
     def __repr__(self):
         return f'{self.name} at {self.price} {self.currency}'

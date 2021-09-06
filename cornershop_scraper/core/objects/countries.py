@@ -9,6 +9,9 @@ includint its initials and language.
 __LAST_UPDATE__ = '04/09/2021'
 
 
+LANGUAGES = ['es', 'en', 'pt']
+
+
 ACCEPTED_COUNTRIES = [
     {'country': 'AR', 'language': 'es-ar', 'name': 'Argentina'},
     {'country': 'BR', 'language': 'pt-br', 'name': 'Brasil'},

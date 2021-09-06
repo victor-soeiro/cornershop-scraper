@@ -25,6 +25,7 @@ def get_csrf_middleware_token(language: str = 'pt-br'):
     """
 
     sess = CloudScraper()
+    sess.headers = DEFAULT_HEADERS
     req = sess.get(f'https://cornershopapp.com/{language}')
     soup = BeautifulSoup(req.text, 'html.parser')
     token = soup.find('input', {'name': 'csrfmiddlewaretoken'})['value']

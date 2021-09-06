@@ -42,34 +42,35 @@ def set_column_width(items: List[Dict[str, Any]], worksheet: Workbook.worksheet_
         worksheet.set_column(i, i, width)
 
 
-def save(items: List[Dict[str, Any]], workbook: Workbook, worksheet_name: str = '') -> None:
+def save(items: List[Dict[str, Any]], workbook: Workbook, worksheet_name: str = '', headers: list = None) -> None:
     """ Save the data in spreadsheet of a workbook. """
 
-    headers = list(items[0].keys())
+    if not headers:
+        headers = items[0].keys()
 
     worksheet = workbook.add_worksheet(name=worksheet_name)
     worksheet.write_row(row=0, col=0, data=headers)
 
     set_column_width(items=items, worksheet=worksheet)
     for index, item in enumerate(items):
-        row = list(item.values())
+        row = list(map(lambda field: item.get(field), headers))
         worksheet.write_row(row=index+1, col=0, data=row)
 
 
-def save_products(file_path: str, products: List[Product]):
+def save_products(file_path: str, products: List[Product], headers: list = None):
     """ Save all products into a spreadsheet. """
 
-    items = [p.context() for p in products]
+    items = [p.__dict__ for p in products]
     with Workbook(file_path) as workbook:
-        save(items=items, workbook=workbook)
+        save(items=items, workbook=workbook, headers=headers)
 
 
-def save_products_by_department(file_path: str, products: Dict[str, List[Product]]):
-    """ Save all products by department into a spreadsheet. """
+def save_products_by_category(file_path: str, products: Dict[str, List[Product]], headers: list = None):
+    """ Save all products by category into a spreadsheet. """
 
     with Workbook(file_path) as workbook:
-        departments = products.keys()
-        for dep in departments:
-            items = [p.context() for p in products[dep]]
-            worksheet_name = dep if len(dep) <= 31 else dep[:31]
-            save(items=items, workbook=workbook, worksheet_name=worksheet_name)
+        categories = products.keys()
+        for cat in categories:
+            items = [p.__dict__ for p in products[cat]]
+            worksheet_name = cat if len(cat) <= 31 else cat[:31]
+            save(items=items, workbook=workbook, worksheet_name=worksheet_name, headers=headers)
