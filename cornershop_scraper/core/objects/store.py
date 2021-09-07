@@ -7,7 +7,7 @@ data about the store and its products.
 """
 
 from time import sleep
-from typing import List, Optional
+from typing import List, Optional, Union, Dict, Any
 
 from cornershop_scraper.core.objects import Department, Product, Aisle
 from cornershop_scraper.core import CornershopURL
@@ -21,13 +21,19 @@ class Store(object):
     DEFAULT_DELAY = 1
 
     def __init__(self, business_id: int, address: str, country: str = 'BR', language: str = 'pt-br',
-                 session: Optional[CloudScraper] = None, file_path: str = ''):
+                 session: Optional[CloudScraper] = None, file_path: str = '', headers: list = None):
+        self.headers = headers
+        if not self.headers:
+            self.headers = [
+                'id', 'name', 'package', 'brand_name', 'brand_id', 'price', 'currency', 'aisle',
+                'department', 'img_url', 'purchasable', 'availability_status'
+            ]
 
         self.business_id = business_id
         self.loc_address = address
         self.loc_country = country
         self.language = language
-        self.file_path = file_path
+
         self.session = session
         if not session:
             self.session = get_local_session(address=address, country=country)
@@ -46,6 +52,10 @@ class Store(object):
         self.aisles = []
 
         self._set_store_data()
+
+        self.file_path = file_path
+        if not self.file_path:
+            self.file_path = self._create_file_path()
 
     def search(self, query: str, only_main_aisle: bool = True) -> List[Product]:
         """ Returns a list of products given a query. """
@@ -86,7 +96,8 @@ class Store(object):
 
         return products
 
-    def products_by_aisle(self, id_: str, save: bool = False, headers: list = None) -> List[Product]:
+    def products_by_aisle(self, id_: str, save: bool = False, to_dict: bool = False,
+                          headers: list = None) -> Union[List[Dict[str, Any]], List[Product]]:
         """ Returns all aisles products given its ID. """
 
         aisle = self.get_aisle(value=id_, key='id')
@@ -103,12 +114,20 @@ class Store(object):
             )
             for prod in json
         ]
+
         if save:
+            if not headers:
+                headers = self.headers
+
             save_products(file_path=self.file_path, products=products, headers=headers)
+
+        if to_dict:
+            return [p.__dict__ for p in products]
 
         return products
 
-    def products_by_department(self, id_: str, save: bool = False, headers: list = None) -> List[Product]:
+    def products_by_department(self, id_: str, save: bool = False, to_dict: bool = False,
+                               headers: list = None) -> Union[List[Dict[str, Any]], List[Product]]:
         """ Returns all department products given its ID. """
 
         products = []
@@ -119,11 +138,17 @@ class Store(object):
             sleep(self.DEFAULT_DELAY)
 
         if save:
+            if not headers:
+                headers = self.headers
+
             save_products(file_path=self.file_path, products=products, headers=headers)
+
+        if to_dict:
+            return [p.__dict__ for p in products]
 
         return products
 
-    def all_products(self, save: bool = False, headers: list = None) -> List[Product]:
+    def all_products(self, save: bool = False, to_dict: bool = True, headers: list = None) -> List[Product]:
         """ Returns all store products. """
 
         products = []
@@ -133,7 +158,13 @@ class Store(object):
             sleep(self.DEFAULT_DELAY)
 
         if save:
+            if not headers:
+                headers = self.headers
+
             save_products(file_path=self.file_path, products=products, headers=headers)
+
+        if to_dict:
+            return [p.__dict__ for p in products]
 
         return products
 
@@ -179,3 +210,6 @@ class Store(object):
         self.departments = [Department(info=dep) for dep in json['departments']]
         for department in self.departments:
             self.aisles.extend(department.aisles)
+
+    def _create_file_path(self):
+        return self.store_name + '.xlsx'

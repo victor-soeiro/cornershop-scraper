@@ -17,6 +17,13 @@ class Product:
         self.brand_id = info['brand'].get('id') if info['brand'] else ''
         self.buy_unit = info['buy_unit']
         self.currency = info['currency']
+        self.default_buy_unit = info['default_buy_unit']
+        self.description = info['description']
+        self.img_url = info['img_url']
+        self.nutritional_info = info['nutritional_info']
+        self.regulatory_fees = info['regulatory_fees']
+        self.related_to = info['related_to']
+        self.unit_conversion_rate = info['unit_conversion_rate']
         self.id = info['id']
         self.kind = info['kind']
         self.name = info['name']

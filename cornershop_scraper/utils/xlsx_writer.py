@@ -20,24 +20,27 @@ from cornershop_scraper.core.objects import Product
 DEFAULT_OFFSET = 5
 
 
-def get_required_column_width(items: List[Dict[str, Any]]) -> List[int]:
+def get_required_column_width(items: List[Dict[str, Any]], headers: list = None) -> List[int]:
     """ Get the width of each column given the data. """
 
-    headers = items[0].keys()
+    if not headers:
+        headers = items[0].keys()
+
     col_width = [len(str(col)) + DEFAULT_OFFSET for col in headers]
-    for row in items:
+    for item in items:
+        row = list(map(lambda field: item.get(field), headers))
         for i, col in enumerate(headers):
-            width = len(str(list(row.values())[i])) + DEFAULT_OFFSET
+            width = len(str(row[i])) + DEFAULT_OFFSET
             if width > col_width[i]:
                 col_width[i] = width
 
     return col_width
 
 
-def set_column_width(items: List[Dict[str, Any]], worksheet: Workbook.worksheet_class):
+def set_column_width(items: List[Dict[str, Any]], worksheet: Workbook.worksheet_class, headers: list = None):
     """ Set the width of each column in the spreadsheet. """
 
-    column_width = get_required_column_width(items=items)
+    column_width = get_required_column_width(items=items, headers=headers)
     for i, width in enumerate(column_width):
         worksheet.set_column(i, i, width)
 
@@ -51,7 +54,7 @@ def save(items: List[Dict[str, Any]], workbook: Workbook, worksheet_name: str = 
     worksheet = workbook.add_worksheet(name=worksheet_name)
     worksheet.write_row(row=0, col=0, data=headers)
 
-    set_column_width(items=items, worksheet=worksheet)
+    set_column_width(items=items, worksheet=worksheet, headers=headers)
     for index, item in enumerate(items):
         row = list(map(lambda field: item.get(field), headers))
         worksheet.write_row(row=index+1, col=0, data=row)
