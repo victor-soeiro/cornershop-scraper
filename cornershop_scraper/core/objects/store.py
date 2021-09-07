@@ -107,7 +107,7 @@ class Store(object):
 
         return products
 
-    def products_by_aisle(self, id_: str, headers: list = None, save: bool = False,
+    def products_by_aisle(self, id_: str, headers: dict = None, save: bool = False,
                           save_img: bool = False, file_name: str = '', extension: str = 'xlsx',
                           to_dict: bool = False) -> Union[List[Dict[str, Any]], List[Product]]:
         """ Returns all aisles products given its ID. """
@@ -148,7 +148,7 @@ class Store(object):
 
         return processed_data
 
-    def products_by_department(self, value: str, key: str = 'id', headers: list = None, save: bool = False,
+    def products_by_department(self, value: str, key: str = 'id', headers: dict = None, save: bool = False,
                                save_img: bool = False, file_name: str = '', extension: str = 'xlsx',
                                to_dict: bool = False) -> Union[List[Dict[str, Any]], List[Product]]:
         """ Returns all department products given its ID. """
@@ -181,7 +181,7 @@ class Store(object):
 
         return processed_data
 
-    def all_products(self, headers: list = None, save: bool = False, save_img: bool = False, file_name: str = '',
+    def all_products(self, headers: dict = None, save: bool = False, save_img: bool = False, file_name: str = '',
                      extension: str = 'xlsx', to_dict: bool = False) -> Union[List[Dict[str, Any]], List[Product]]:
         """ Returns all store products. """
 
