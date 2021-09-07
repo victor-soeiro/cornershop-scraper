@@ -50,6 +50,12 @@ class Cornershop:
             session=self._session
         )
 
+    def extract_all(self):
+        """ USE WITH CAUTION!! It may take some time. """
+        for store in self.stores:
+            store_obj = self.create_store(store['business_id'])
+            store_obj.all_products(save=True)
+
     def _get_stores(self) -> List[dict]:
         """ Get all stores near the given location. """
 
