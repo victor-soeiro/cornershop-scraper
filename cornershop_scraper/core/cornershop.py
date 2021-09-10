@@ -105,19 +105,20 @@ class Cornershop:
         req = self._session.get(url=url, params=params)
         json = req.json()
 
-        stores_id = set()
         stores = []
+        stores_id = set()
         for category in json:
             stores_data = [
                 dict(
                     name=i['content']['name'],
-                    # store_id=i['content']['store_id'],
+                    store_id=i['content']['store_id'],
                     business_id=i['content']['id']
                 ) for i in category['items'] if i['content']['store_id'] not in stores_id
             ]
 
             for store in stores_data:
                 stores_id.add(store['store_id'])
+                del store['store_id']
                 stores.append(store)
 
         return stores
