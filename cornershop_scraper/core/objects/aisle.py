@@ -8,9 +8,16 @@ the front-end API.
 
 
 class Aisle:
-    """ A department aisle. """
+    """ A department aisle object. """
 
     def __init__(self, info: dict, department_id: str):
+        """ Initialize an Aisle instance.
+
+        Arguments:
+            info : The retrieved data.
+            department_id : The department ID.
+        """
+
         self.name = info['name']
         self.id = info['id']
         self.department_id = department_id

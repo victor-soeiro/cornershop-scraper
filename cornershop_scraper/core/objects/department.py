@@ -10,9 +10,17 @@ from .aisle import Aisle
 
 
 class Department(object):
-    """ A store department. """
+    """ A store Department object. """
 
     def __init__(self, info: dict):
+        """  Initialize a Department instance.
+
+        Arguments:
+            info : The retrieved data.
+
+        Returns:
+            None
+        """
         self.name = info['name']
         self.id = info['id']
         self.aisles = [
@@ -21,7 +29,11 @@ class Department(object):
         ]
 
     def number_of_aisles(self):
-        """ Returns the number of aisles in the department. """
+        """ Returns the number of aisles in the department.
+
+        Returns:
+            The number of aisles.
+        """
         return len(self.aisles)
 
     def __repr__(self):

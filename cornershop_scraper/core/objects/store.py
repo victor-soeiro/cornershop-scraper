@@ -11,17 +11,16 @@ from typing import List, Optional, Union, Dict, Any
 
 from cornershop_scraper.core.objects import Department, Product, Aisle
 from cornershop_scraper.core import CornershopURL
-from cornershop_scraper.utils.writer import parser
-from cornershop_scraper.utils.image import save_image
+from cornershop_scraper.utils.writer import parser, ALLOWED_WRITERS
 from cornershop_scraper.utils.token import get_local_session, CloudScraper
 
 
 class Store(object):
-    """ Scrapes and saves store information and its products. """
+    """ A store object that scrapes and saves its information and products. """
 
     DEFAULT_DELAY = 1
     DEFAULT_FILE_NAME = 'default_file'
-    DEFAULT_WRITER = 'xlsx'
+    DEFAULT_WRITER = 'csv'
     DEFAULT_HEADERS = {
         'id': 'ID',
         'name': 'Name',
@@ -37,11 +36,24 @@ class Store(object):
         'availability_status': 'Availability Status'
     }
 
-    def __init__(self, business_id: int, address: str, country: str = 'BR', language: str = 'pt-br',
-                 session: Optional[CloudScraper] = None, file_path: str = None, headers: list = None):
-        self.headers = headers
-        if not self.headers:
-            self.headers = self.DEFAULT_HEADERS
+    def __init__(self, business_id: int,
+                 address: str,
+                 country: str = 'BR',
+                 language: str = 'pt-br',
+                 session: Optional[CloudScraper] = None,
+                 file_path: str = None):
+        """ Initiaze the Store instance.
+
+        Arguments:
+            address : The local address.
+            country : The country.
+            language : The language.
+            session : The cloudscraper session.
+            file_path : The file path.
+
+        Returns:
+            None
+        """
 
         self.file_path = file_path
         self.business_id = business_id
@@ -68,8 +80,17 @@ class Store(object):
 
         self._set_store_data()
 
-    def search(self, query: str, only_main_aisle: bool = True) -> List[Product]:
-        """ Returns a list of products given a query. """
+    def search(self, query: str,
+               only_main_aisle: bool = True) -> List[Product]:
+        """ Returns a list of products given a query.
+
+        Arguments:
+            query : The search term.
+            only_main_aisle : If true show only products from the main aisle.
+
+        Returns:
+            A list of products.
+        """
 
         url = CornershopURL + f'/api/v2/branches/{self.business_id}/search'
 
@@ -107,12 +128,33 @@ class Store(object):
 
         return products
 
-    def products_by_aisle(self, id_: str, headers: dict = None, save: bool = False,
-                          save_img: bool = False, file_name: str = '', extension: str = 'xlsx',
+    def products_by_aisle(self, value: str,
+                          key: str = 'id',
+                          headers: dict = None,
+                          save: bool = False,
+                          save_img: bool = False,
+                          img_path: str = '',
+                          file_name: str = '',
+                          extension: str = 'xlsx',
                           to_dict: bool = False) -> Union[List[Dict[str, Any]], List[Product]]:
-        """ Returns all aisles products given its ID. """
+        """ Returns all aisles products given its ID.
 
-        aisle = self.get_aisle(value=id_, key='id')
+        Arguments:
+            value : The aisle value.
+            key : The aisle key.
+            headers : The headers that will be used to change the name of the fields and which of them will be saved.
+            save : If true saves the products on a file.
+            save_img : If true saves all the products images.
+            img_path : The image path.
+            file_name : The file name.
+            extension : The writer extension.
+            to_dict : If true returns a list of dictionaries.
+
+        Returns:
+            A list of products.
+        """
+
+        aisle = self.get_aisle(value=value, key=key)
 
         url = CornershopURL + f'/api/v2/branches/{self.business_id}/aisles/{aisle.id}/products'
         req = self.session.get(url)
@@ -127,119 +169,171 @@ class Store(object):
             for prod in json
         ]
 
-        if not file_name:
-            file_name = aisle.id + '.' + extension
-
         processed_data = self._process_and_save(
             items=products,
             headers=headers,
             save=save,
+            save_img=save_img,
+            img_path=img_path,
             file_name=file_name,
             extension=extension,
             to_dict=to_dict,
         )
 
-        if save_img:
-            for product in products:
-                img_url = product.img_url
-                img_file_name = product.id
-                save_image(img_url, file_name=img_file_name)
-                sleep(self.DEFAULT_DELAY)
-
         return processed_data
 
-    def products_by_department(self, value: str, key: str = 'id', headers: dict = None, save: bool = False,
-                               save_img: bool = False, file_name: str = '', extension: str = 'xlsx',
+    def products_by_department(self, value: str,
+                               key: str = 'id',
+                               headers: dict = None,
+                               save: bool = False,
+                               save_img: bool = False,
+                               img_path: str = '',
+                               file_name: str = '',
+                               extension: str = 'xlsx',
                                to_dict: bool = False) -> Union[List[Dict[str, Any]], List[Product]]:
-        """ Returns all department products given its ID. """
+        """ Returns all aisles products given its ID.
+
+        Arguments:
+            value : The department value.
+            key : The department key.
+            headers : The headers that will be used to change the name of the fields and which of them will be saved.
+            save : If true saves the products on a file.
+            save_img : If true saves all the products images.
+            img_path : The image path.
+            file_name : The file name.
+            extension : The writer extension.
+            to_dict : If true returns a list of dictionaries.
+
+        Returns:
+            A list of products.
+        """
 
         products = []
         department = self.get_department(value=value, key=key)
         for aisle in department.aisles:
-            aisle_products = self.products_by_aisle(id_=aisle.id)
+            aisle_products = self.products_by_aisle(value=aisle.id)
             products.extend(aisle_products)
             sleep(self.DEFAULT_DELAY)
-
-        if not file_name:
-            file_name = department.id + '.' + extension
 
         processed_data = self._process_and_save(
             items=products,
             headers=headers,
             save=save,
+            save_img=save_img,
+            img_path=img_path,
             file_name=file_name,
             extension=extension,
             to_dict=to_dict,
         )
 
-        if save_img:
-            for product in products:
-                img_url = product.img_url
-                img_file_name = product.id
-                save_image(img_url, file_name=img_file_name)
-                sleep(self.DEFAULT_DELAY)
-
         return processed_data
 
-    def all_products(self, headers: dict = None, save: bool = False, save_img: bool = False, file_name: str = '',
-                     extension: str = 'xlsx', to_dict: bool = False) -> Union[List[Dict[str, Any]], List[Product]]:
-        """ Returns all store products. """
+    def all_products(self, headers: dict = None,
+                     save: bool = False,
+                     save_img: bool = False,
+                     img_path: str = '',
+                     file_name: str = '',
+                     extension: str = 'xlsx',
+                     to_dict: bool = False) -> Union[List[Dict[str, Any]], List[Product]]:
+        """ Returns all store products.
+
+        Arguments:
+            headers : The headers that will be used to change the name of the fields and which of them will be saved.
+            save : If true saves the products on a file.
+            save_img : If true saves all the products images.
+            img_path : The image path.
+            file_name : The file name.
+            extension : The writer extension.
+            to_dict : If true returns a list of dictionaries.
+
+        Returns:
+            A list of products.
+        """
 
         products = []
         for department in self.departments:
             department_products = self.products_by_department(value=department.id)
             products.extend(department_products)
 
-        if not file_name:
-            file_name = self.store_name + '.' + extension
-
         processed_data = self._process_and_save(
             items=products,
             headers=headers,
             save=save,
+            save_img=save_img,
+            img_path=img_path,
             file_name=file_name,
             extension=extension,
             to_dict=to_dict,
         )
 
-        if save_img:
-            for product in products:
-                img_url = product.img_url
-                img_file_name = product.id
-                save_image(img_url, file_name=img_file_name)
-                sleep(self.DEFAULT_DELAY)
-
         return processed_data
 
-    def save_departments(self, writer: str = 'csv') -> None:
-        self._process_and_save(
-            items=self.departments,
-            headers={
+    def save_departments(self, extension: str = 'csv',
+                         headers: Dict[str, str] = None) -> None:
+        """ Saves the departments on a file.
+
+        Arguments:
+            extension : The writer extensnion.
+            headers : The headers that will be used to change the name of the fields and which of them will be saved.
+
+        Returns:
+            None
+        """
+
+        if not headers:
+            headers = {
                 'id': 'ID',
                 'name': 'Name'
-            },
+            }
+
+        self._process_and_save(
+            items=self.departments,
+            headers=headers,
             save=True,
             file_name=self.store_name + ' Departments',
-            extension=writer,
+            extension=extension,
             to_dict=False
         )
 
-    def save_aisles(self, writer: str = 'csv') -> None:
-        self._process_and_save(
-            items=self.aisles,
-            headers={
+    def save_aisles(self, extension: str = 'csv',
+                    headers: Dict[str, str] = None) -> None:
+        """ Saves the ailes on a file.
+
+        Arguments:
+            extension : The writer extensnion.
+            headers : The headers that will be used to change the name of the fields and which of them will be saved.
+
+        Returns:
+            None
+        """
+
+        if not headers:
+            headers = {
                 'id': 'ID',
                 'name': 'Name',
                 'department_id': 'Department ID'
-            },
+            }
+
+        self._process_and_save(
+            items=self.aisles,
+            headers=headers,
             save=True,
             file_name=self.store_name + ' Aisles',
-            extension=writer,
+            extension=extension,
             to_dict=False
         )
 
-    def get_department(self, value: str, key: str) -> Department:
-        """ Check if the given department exists. """
+    def get_department(self, value: str,
+                       key: str) -> Department:
+        """ Check if the given department exists.
+
+        Arguments:
+            value : The department value.
+            key : The department property to verify.
+
+        Returns:
+            The department if exists.
+        """
 
         for department in self.departments:
             if department.__dict__[key] == value:
@@ -247,8 +341,17 @@ class Store(object):
 
         raise Warning('This department not exists.')
 
-    def get_aisle(self, value: str, key: str) -> Aisle:
-        """ Check if the given aisle exists. """
+    def get_aisle(self, value: str,
+                  key: str) -> Aisle:
+        """ Check if the given aisle exists.
+
+        Arguments:
+            value : The aisle value.
+            key : The aisle property to verify.
+
+        Returns:
+            The aisle if exists.
+        """
 
         for aisle in self.aisles:
             if aisle.__dict__[key] == value:
@@ -256,12 +359,50 @@ class Store(object):
 
         raise Warning('This aisle does not exists.')
 
-    def _process_and_save(self, items: list, headers: dict = None, save: bool = False, file_name: str = '',
-                          extension: str = 'xlsx', to_dict: bool = True) -> Union[List[Dict[str, Any]], List[Any]]:
-        """ Process and save the list of products. """
+    def _save_image(self, products: List[Product],
+                    img_path: str = '',
+                    force_new_file: bool = False) -> None:
+        """ Saves the products images.
+
+        Arguments:
+            products : The products that will save the images.
+            force_new_file : If true saves a new file even if its already exists.
+
+        Returns:
+            None
+        """
+        if not img_path:
+            img_path = self.file_path
+
+        writer = ALLOWED_WRITERS['img'](img_path)
+        writer.DEFAULT_DELAY = self.DEFAULT_DELAY
+        writer.save_items(items=products, force_new_file=force_new_file)
+
+    def _process_and_save(self, items: list,
+                          headers: dict = None,
+                          save: bool = False,
+                          save_img: bool = False,
+                          img_path: str = '',
+                          file_name: str = '',
+                          extension: str = 'xlsx',
+                          to_dict: bool = True) -> Union[List[Dict[str, Any]], List[Any]]:
+        """ Process and save the list of products.
+
+        Arguments:
+            items : The items to save.
+            headers : The headers that will be used to change the name of the fields and which of them will be saved.
+            save : If true saves the file on the given extension.
+            file_name : The file name.
+            extension : The writer extension.
+            to_dict : If true returns a list of dictionaries.
+
+        Returns:
+            A list of processed items.
+        """
+
         if save:
             if not headers:
-                headers = self.headers
+                headers = self.DEFAULT_HEADERS
 
             if not file_name:
                 file_name = self.DEFAULT_FILE_NAME
@@ -269,13 +410,20 @@ class Store(object):
             writer = parser(extension, self.DEFAULT_WRITER)(self.file_path)
             writer.save_items(items=items, file_name=file_name, headers=headers)
 
+        if save_img:
+            self._save_image(products=items, img_path=img_path)
+
         if to_dict and not isinstance(items[0], dict):
             return [p.__dict__ for p in items]
 
         return items
 
     def _set_store_data(self) -> None:
-        """ Retrieve and set store data. """
+        """ Retrieve and set store data.
+
+        Returns:
+            None
+        """
 
         url = CornershopURL + f'/api/v3/branches/{self.business_id}'
         headers = {'accept-language': self.language}

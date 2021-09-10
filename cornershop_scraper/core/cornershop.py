@@ -14,9 +14,24 @@ from cornershop_scraper.utils.token import get_local_session
 
 
 class Cornershop:
-    """ Scrapes all the stores on a location. """
+    """ Cornershop object that scrapes products and stores. """
 
-    def __init__(self, address: str, country: str = 'BR', language: str = 'pt-br'):
+    def __init__(self, address: str,
+                 country: str = 'BR',
+                 language: str = 'pt-br',
+                 file_path: str = ''):
+        """ Initialize a Cornershop instance.
+
+        Arguments:
+            address : The local address.
+            country : The country.
+            language: The language.
+
+        Returns:
+            None
+        """
+
+        self.file_path = file_path
         self._address = address
         self._country = country
         self._language = language
@@ -33,31 +48,57 @@ class Cornershop:
         return self._stores
 
     def countries(self) -> dict:
-        """ Returns a dict containing all the information about the countries that Cornershop are available. """
+        """ Returns dictionary with the countries information.
+
+        Returns:
+            A dictionary containing all the information about the countries that Cornershop are available.
+        """
 
         url = CornershopURL + '/api/v1/countries'
         req = self._session.get(url=url)
         return req.json()
 
-    def create_store(self, business_id: int) -> Store:
-        """ Returns a Store object given the business ID and the location. """
+    def create_store(self, business_id: int,
+                     file_path: str = '') -> Store:
+        """ Returns a Store object given the business ID and the location.
+
+        Arguments:
+            business_id : The business ID.
+            file_path : The file path.
+
+        Return:
+            A store instance.
+        """
+
+        if not file_path:
+            file_path = self.file_path
 
         return Store(
             business_id=business_id,
             address=self._address,
             country=self._country,
             language=self._language,
+            file_path=file_path,
             session=self._session
         )
 
-    def extract_all(self):
-        """ USE WITH CAUTION!! It may take some time. """
+    def extract_all(self) -> None:
+        """ Saves all products from all the stores.
+
+        Returns:
+            None
+        """
+
         for store in self.stores:
             store_obj = self.create_store(store['business_id'])
             store_obj.all_products(save=True)
 
     def _get_stores(self) -> List[dict]:
-        """ Get all stores near the given location. """
+        """ Get all stores near the given location.
+
+        Returns:
+            A list of stores on the location.
+        """
 
         url = CornershopURL + '/api/v3/branch_groups'
         params = {'locality': self._address, 'country': self._country}

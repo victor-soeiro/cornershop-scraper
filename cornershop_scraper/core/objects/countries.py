@@ -30,6 +30,15 @@ ACCEPTED_COUNTRIES = [
 
 
 def get_country_arguments(country_name: str):
+    """ Given a country name returns the arguments used to create a Cornershop instance.
+
+    Arguments:
+        country_name : The name of the country.
+
+    Returns:
+        None
+    """
+
     for country in ACCEPTED_COUNTRIES:
         if country['name'] == country_name:
             return {'country': country['country'], 'language': country['language']}
