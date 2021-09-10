@@ -7,7 +7,7 @@ data about the store and its products.
 """
 
 from time import sleep
-from typing import List, Optional, Union, Dict, Any
+from typing import List, Union, Dict, Any
 
 from cornershop_scraper.core.objects import Department, Product, Aisle
 from cornershop_scraper.core import CornershopURL
@@ -40,7 +40,7 @@ class Store(object):
                  address: str,
                  country: str = 'BR',
                  language: str = 'pt-br',
-                 session: Optional[CloudScraper] = None,
+                 session: CloudScraper = None,
                  file_path: str = None):
         """ Initiaze the Store instance.
 

@@ -111,7 +111,7 @@ class Cornershop:
             stores_data = [
                 dict(
                     name=i['content']['name'],
-                    store_id=i['content']['store_id'],
+                    # store_id=i['content']['store_id'],
                     business_id=i['content']['id']
                 ) for i in category['items'] if i['content']['store_id'] not in stores_id
             ]
