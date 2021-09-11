@@ -10,7 +10,8 @@ the front-end API.
 class Aisle:
     """ A department aisle object. """
 
-    def __init__(self, info: dict, department_id: str):
+    def __init__(self, info: dict,
+                 department_id: str):
         """ Initialize an Aisle instance.
 
         Arguments:

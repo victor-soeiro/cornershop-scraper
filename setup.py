@@ -6,7 +6,7 @@ README = (HERE / 'README.md').read_text()
 REQUIRES = (HERE / 'requirements.txt').read_text().splitlines()
 
 NAME = 'cornershop_scraper'
-VERSION = '0.2.1'
+VERSION = '0.2.2'
 DESCRIPTION = 'Scrapes Cornershop stores and products.'
 AUTHOR = 'Victor Soeiro'
 AUTHOR_EMAIL = 'victor.soeiro.araujo@gmail.com'

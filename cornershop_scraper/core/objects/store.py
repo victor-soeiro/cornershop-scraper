@@ -9,7 +9,7 @@ data about the store and its products.
 from time import sleep
 from typing import List, Union, Dict, Any
 
-from cornershop_scraper.core.objects import Department, Product, Aisle
+from cornershop_scraper.core.objects import Department, Product, Aisle, Offer
 from cornershop_scraper.core import CornershopURL
 from cornershop_scraper.utils.writer import parser, ALLOWED_WRITERS
 from cornershop_scraper.utils.token import get_local_session, CloudScraper
@@ -75,6 +75,7 @@ class Store(object):
         self.address = None
         self.country = None
         self.description = None
+        self.offers = []
         self.departments = []
         self.aisles = []
 
@@ -268,13 +269,50 @@ class Store(object):
 
         return processed_data
 
+    def save_offers(self, extension: str = 'csv',
+                    headers: Dict[str, str] = None,
+                    file_name: str = None) -> None:
+        """ Saves the offers on a file.
+
+        Arguments:
+            extension : The writer extensnion.
+            headers : The headers that will be used to change the name of the fields and which of them will be saved.
+            file_name : The file name.
+
+        Returns:
+            None
+        """
+
+        if not headers:
+            headers = {
+                'id': 'ID',
+                'caption': 'Caption',
+                'image': 'Image URL',
+                'url': 'URL',
+                'valid_until': 'Valid Until'
+            }
+
+        if not file_name:
+            file_name = self.store_name + ' Offers'
+
+        self._process_and_save(
+            items=self.offers,
+            headers=headers,
+            save=True,
+            file_name=file_name,
+            extension=extension,
+            to_dict=False
+        )
+
     def save_departments(self, extension: str = 'csv',
-                         headers: Dict[str, str] = None) -> None:
+                         headers: Dict[str, str] = None,
+                         file_name: str = None) -> None:
         """ Saves the departments on a file.
 
         Arguments:
             extension : The writer extensnion.
             headers : The headers that will be used to change the name of the fields and which of them will be saved.
+            file_name : The file name.
 
         Returns:
             None
@@ -286,22 +324,27 @@ class Store(object):
                 'name': 'Name'
             }
 
+        if not file_name:
+            file_name = self.store_name + ' Departments'
+
         self._process_and_save(
             items=self.departments,
             headers=headers,
             save=True,
-            file_name=self.store_name + ' Departments',
+            file_name=file_name,
             extension=extension,
             to_dict=False
         )
 
     def save_aisles(self, extension: str = 'csv',
-                    headers: Dict[str, str] = None) -> None:
+                    headers: Dict[str, str] = None,
+                    file_name: str = '') -> None:
         """ Saves the ailes on a file.
 
         Arguments:
             extension : The writer extensnion.
             headers : The headers that will be used to change the name of the fields and which of them will be saved.
+            file_name : The file name.
 
         Returns:
             None
@@ -314,11 +357,14 @@ class Store(object):
                 'department_id': 'Department ID'
             }
 
+        if not file_name:
+            file_name = self.store_name + ' Aisles'
+
         self._process_and_save(
             items=self.aisles,
             headers=headers,
             save=True,
-            file_name=self.store_name + ' Aisles',
+            file_name=file_name,
             extension=extension,
             to_dict=False
         )
@@ -442,6 +488,10 @@ class Store(object):
         self.address = info['address']
         self.country = info['country']
         self.description = info['description']
+
+        for offer in info['featured']:
+            if '/catalog/' in offer['url']:
+                self.offers.append(Offer(offer))
 
         self.departments = [Department(info=dep) for dep in json['departments']]
         for department in self.departments:
