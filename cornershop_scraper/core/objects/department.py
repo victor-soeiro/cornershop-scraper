@@ -23,6 +23,7 @@ class Department(object):
         """
         self.name = info['name']
         self.id = info['id']
+        self.img_url = info['img_url']
         self.aisles = [
             Aisle(info=aisle, department_id=self.id)
             for aisle in info['aisles']
