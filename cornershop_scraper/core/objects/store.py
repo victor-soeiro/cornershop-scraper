@@ -321,7 +321,8 @@ class Store(object):
         if not headers:
             headers = {
                 'id': 'ID',
-                'name': 'Name'
+                'name': 'Name',
+                'img_url': 'Image URL'
             }
 
         if not file_name:
@@ -354,7 +355,8 @@ class Store(object):
             headers = {
                 'id': 'ID',
                 'name': 'Name',
-                'department_id': 'Department ID'
+                'department_id': 'Department ID',
+                'img_url': 'Image URL'
             }
 
         if not file_name:
