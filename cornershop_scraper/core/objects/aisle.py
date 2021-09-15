@@ -21,6 +21,7 @@ class Aisle:
 
         self.name = info['name']
         self.id = info['id']
+        self.img_url = info['img_url']
         self.department_id = department_id
 
     def __repr__(self):
