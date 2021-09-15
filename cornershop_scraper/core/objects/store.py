@@ -306,13 +306,17 @@ class Store(object):
 
     def save_departments(self, extension: str = 'csv',
                          headers: Dict[str, str] = None,
-                         file_name: str = None) -> None:
+                         file_name: str = None,
+                         save_img: bool = True,
+                         img_path: str = '') -> None:
         """ Saves the departments on a file.
 
         Arguments:
             extension : The writer extensnion.
             headers : The headers that will be used to change the name of the fields and which of them will be saved.
             file_name : The file name.
+            save_img : If true saves the images of each item.
+            img_path : The image path.
 
         Returns:
             None
@@ -332,6 +336,8 @@ class Store(object):
             items=self.departments,
             headers=headers,
             save=True,
+            save_img=save_img,
+            img_path=img_path,
             file_name=file_name,
             extension=extension,
             to_dict=False
@@ -339,13 +345,17 @@ class Store(object):
 
     def save_aisles(self, extension: str = 'csv',
                     headers: Dict[str, str] = None,
-                    file_name: str = '') -> None:
+                    file_name: str = '',
+                    save_img: bool = True,
+                    img_path: str = '') -> None:
         """ Saves the ailes on a file.
 
         Arguments:
             extension : The writer extensnion.
             headers : The headers that will be used to change the name of the fields and which of them will be saved.
             file_name : The file name.
+            save_img : If true saves the images of each item.
+            img_path : The image path.
 
         Returns:
             None
@@ -366,6 +376,8 @@ class Store(object):
             items=self.aisles,
             headers=headers,
             save=True,
+            save_img=save_img,
+            img_path=img_path,
             file_name=file_name,
             extension=extension,
             to_dict=False
@@ -440,6 +452,8 @@ class Store(object):
             items : The items to save.
             headers : The headers that will be used to change the name of the fields and which of them will be saved.
             save : If true saves the file on the given extension.
+            save_img : If true saves the images of each item.
+            img_path : The image path.
             file_name : The file name.
             extension : The writer extension.
             to_dict : If true returns a list of dictionaries.

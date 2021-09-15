@@ -9,6 +9,6 @@ to scrape the data from the API.
 from .core.cornershop import Cornershop
 from .core.objects.store import Store
 
-__version__ = '0.2.1'
+__version__ = '0.2.3'
 __author__ = 'Victor Soeiro'
 
