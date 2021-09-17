@@ -1,6 +1,3 @@
-import sys
-import os
-
 try:
     from setuptools import setup
 except ImportError:
@@ -10,12 +7,6 @@ except ImportError:
 packages = [
     'cornershop_scraper'
 ]
-
-if sys.argv[-1] == 'publish':
-    # PyPI uses Twine for package management.
-    os.system('python setup.py sdist bdist_wheel')
-    os.system('twine upload dist/*')
-    sys.exit()
 
 
 with open('requirements.txt') as f:
@@ -37,7 +28,7 @@ setup(
     license='MIT',
     classifiers=[
         'Programming Language :: Python :: 3',
-        'Natural Language :: Portuguese'
+        'Natural Language :: Portuguese',
         'Intended Audience :: Customer Service',
         'Intended Audience :: Science/Research',
     ],
