@@ -69,7 +69,7 @@ Each store contains a list of departments that contains a list of aisles. You ca
 
 ```python
 department_id = 'C_512'  # Laticínios e ovos
-department_products = prezunic.products_by_department(department_id)
+department_products = prezunic.get_products_by_department(department_id)
 department_products
 
 >>> ['Creme de leite tradicional at 3.19 BRL', ...]

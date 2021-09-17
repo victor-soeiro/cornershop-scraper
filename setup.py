@@ -1,38 +1,47 @@
-from pathlib import Path
-from setuptools import setup, find_packages
+import sys
+import os
 
-HERE = Path(__file__).parent
-README = (HERE / 'README.md').read_text()
-REQUIRES = (HERE / 'requirements.txt').read_text().splitlines()
+try:
+    from setuptools import setup
+except ImportError:
+    from distutils.core import setup
 
-NAME = 'cornershop_scraper'
-VERSION = '0.2.2'
-DESCRIPTION = 'Scrapes Cornershop stores and products.'
-AUTHOR = 'Victor Soeiro'
-AUTHOR_EMAIL = 'victor.soeiro.araujo@gmail.com'
-URL = 'https://github.com/victor-soeiro/cornershop-scraper'
-LICENSE = 'Public domain'
-PYTHON_VER = '>=3.6'
+
+packages = [
+    'cornershop_scraper'
+]
+
+if sys.argv[-1] == 'publish':
+    # PyPI uses Twine for package management.
+    os.system('python setup.py sdist bdist_wheel')
+    os.system('twine upload dist/*')
+    sys.exit()
+
+
+with open('requirements.txt') as f:
+    requires = f.read().splitlines()
+
+with open('README.md') as f:
+    readme = f.read()
+
 
 setup(
-    name=NAME,
-    version=VERSION,
-    description=DESCRIPTION,
-    long_description=README,
+    name='cornershop_sccraper',
+    version='0.3.0',
+    description='Scrapes Cornershop stores and products.',
+    long_description=readme,
     long_description_content_type='text/markdown',
-    author=AUTHOR,
-    author_email=AUTHOR_EMAIL,
-    url=URL,
-    license=LICENSE,
+    author='Victor Soeiro',
+    author_email='victor.soeiro.araujo@gmail.com',
+    url='https://github.com/victor-soeiro/cornershop-scraper',
+    license='MIT',
     classifiers=[
         'Programming Language :: Python :: 3',
-        'Programming Language :: Python :: 3.6',
+        'Natural Language :: Portuguese'
         'Intended Audience :: Customer Service',
         'Intended Audience :: Science/Research',
-        'License :: OSI Approved :: MIT License',
     ],
-    packages=find_packages(),
-    install_requires=REQUIRES,
-    python_requires=PYTHON_VER,
+    packages=packages,
+    install_requires=requires,
     keywords=['cornershop', 'scraper', 'products', 'stores', 'market', 'delivery']
 )

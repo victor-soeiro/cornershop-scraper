@@ -1,12 +1,13 @@
 """
-cornershop_scraper.core.objects.countries
+cornershop_scraper.core.countries
 ------------------------------------------
 
-Provides an useful objecct listing all the accepted countries
-includint its initials and language.
-"""
+Provides useful methods to list all the accepted countries
+including its initials and language.
 
-__LAST_UPDATE__ = '04/09/2021'
+TODO:
+    - Integrate with countries method of Cornershop instance.
+"""
 
 
 LANGUAGES = ['es', 'en', 'pt']
@@ -30,14 +31,7 @@ ACCEPTED_COUNTRIES = [
 
 
 def get_country_arguments(country_name: str):
-    """ Given a country name returns the arguments used to create a Cornershop instance.
-
-    Arguments:
-        country_name : The name of the country.
-
-    Returns:
-        None
-    """
+    """ Given a country name returns arguments to create a Cornershop instance. """
 
     for country in ACCEPTED_COUNTRIES:
         if country['name'] == country_name:
